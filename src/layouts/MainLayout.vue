@@ -1,43 +1,53 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="hHh lpR fFf">
+    <q-header elevated class="bg-primary">
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
-
-        <q-toolbar-title>
-          Quasar App
+        <q-toolbar-title class="text-center">
+          TooDoo App
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
+    <q-footer elevated class="bg-primary">
+      <q-tabs>
+        <q-route-tab
+          v-for="(nav, idx) in navs"
+          :key="idx" clickable
+          :to="nav.to"
+          :icon="nav.icon"
+          :label="nav.label" />
+        </q-tabs>
+    </q-footer>
+
     <q-drawer
+      breakpoint="767"
       v-model="leftDrawerOpen"
       show-if-above
       bordered
-      class="bg-grey-1"
+      class="bg-primary"
     >
-      <q-list>
+      <q-list dark>
         <q-item-label
           header
-          class="text-grey-8"
         >
-          Essential Links
+          Navigation
         </q-item-label>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        <q-item clickable
+          class="text-grey-5"
+          exact
+          v-for="(nav, idx) in navs"
+          :key="idx"
+          :to="nav.to"
+        >
+          <q-item-section avatar>
+            <q-icon :name="nav.icon" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label >{{nav.label}}</q-item-label>
+          </q-item-section>
+        </q-item>
+
       </q-list>
     </q-drawer>
 
@@ -48,72 +58,47 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
-
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-];
-
 import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   name: 'MainLayout',
-
-  components: {
-    EssentialLink
+  data() {
+    return {
+      navs: [
+        {
+          label: "ToDo",
+          icon: 'list',
+          to: '/'
+        },
+        {
+          label: "Settings",
+          icon: 'settings',
+          to: '/settings'
+        }
+      ]
+    }
   },
-
   setup () {
     const leftDrawerOpen = ref(false)
 
     return {
-      essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }
     }
   }
-})
+});
 </script>
+
+<style lang="scss">
+@media screen and (min-width: 768px) {
+  .q-footer {
+    display: none;
+  }
+}
+
+.q-router-link--exact-active {
+  color: #fff !important;
+}
+</style>
